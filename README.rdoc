@@ -1,0 +1,3 @@
+= AutoLocation
+
+This project rocks and uses MIT-LICENSE.# AutoLoc
