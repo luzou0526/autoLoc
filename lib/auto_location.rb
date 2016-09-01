@@ -5,22 +5,31 @@ else
   require 'faster_csv'
 end
 
-require './auto_location/string'
+require 'auto_location/string'
 
 module AutoLocation
   city_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'cities.csv'))
   zip_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'zips.csv'))
   state_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'states.csv'))
 
-  if RUBY_VERSION.to_f >= 1.9
-    @cities = CSV.read(city_file)
-    @zips = Hash[(CSV.read(zip_file)).map{|x| x << 1}]
-    @states = CSV.read(state_file).flatten
-  else
-    @cities = FasterCSV.parse(city_file).flatten
-    @zips = Hash[(FasterCSV.parse(zip_file)).map{|x| x << 1}]
-    @states = FasterCSV.parse(state_file).flatten
-  end
+  csv_method = lambda{ |x| RUBY_VERSION.to_f >= 1.9 ? CSV.read(x) : FasterCSV.parse(x) }
+  # regular expressions for city: CITY_NAME_PART1.*PART2.*....*STATE.*
+  # ex. San.*Jose.*(CA)*.*
+  @cities ||= csv_method.call(city_file).map do |x|
+                [ Regexp.new(((x[2].split(/[\s\,]/).map(&:strip) << ('(' + x[1] + ')')).join('.*') + '*.*').upcase),
+                  x[2],
+                  x[1]
+                ]
+              end
+  @zips   ||= Hash[(csv_method.call(zip_file)).map{|x| x << 1}]
+  @states ||= Hash[(csv_method.call(state_file)).map do |x|
+                state = x[0]
+                x[0] = x[0].upcase
+                x << state
+              end]
+              
+  # default result if zipcode, city, state search all failed
+  @not_found_location ||= {error: "Location Not Found"}.freeze
 
   class << self
     def cities
@@ -35,15 +44,8 @@ module AutoLocation
       @states
     end
 
-    def default_location
-      # default result if zipcode, city, state search all failed
-      @default_location ||= {location: 'San Francisco, CA', type: 'city'}.freeze
+    def not_found_location
+      @not_found_location
     end
   end
 end
-
-puts "San Jose, CA".validated_location
-puts "San Jose CA".validated_location
-puts "SanJoseCA".validated_location
-puts "noises aaa 12 noises bbb San noises ccc Jose noises ddd CA".validated_location
-puts "San CA".validated_location
