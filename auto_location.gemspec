@@ -16,5 +16,8 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
   s.name          = "auto-loc"
-  s.require_paths = ["lib"]
+  s.require_paths = ['lib']
+  s.add_dependency 'fastercsv', '~> 1.5'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'bundler'
 end
