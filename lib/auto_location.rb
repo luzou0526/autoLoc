@@ -24,7 +24,7 @@ module AutoLocation
                 [(x[2] + ', ' + x[1]).upcase, [x[2], x[1]]]
               end]
   @zips   ||= Hash[(csv_method.call(city_file)).map do |x|
-                [x[0], [x[2], x[1]]]
+                [x[0].to_i, [x[2], x[1]]]
               end]
   @states ||= Hash[(csv_method.call(state_file)).map do |x|
                 state = x[0]

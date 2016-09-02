@@ -10,7 +10,7 @@ class String
   # Check if zipcode exists
   def zipcode(zipcode)
     zipcode.scan(/\d{5}/).each do |token|
-      result = AutoLocation.zips[token]
+      result = AutoLocation.zips[token.to_i]
       return { location: {zipcode: token, city: result[0], state: result[1]}, type: 'zipcode' } unless result == nil
     end
     false
