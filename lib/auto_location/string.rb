@@ -19,9 +19,11 @@ class String
   # Find a city with the search string
   def city(city)
     city = city.upcase
-    result = AutoLocation.cities.find do |row|
-      city[row[0]]
+    results = []
+    AutoLocation.cities.find_all do |row|
+      results << row unless city[row[0]] == nil
     end
+    result = results == [] ? nil : results.max {|a,b| a[1].length <=> b[1].length}
     result == nil ? false : { location: {city: result[1], state: result[2]}, type: 'city' }
   end
 

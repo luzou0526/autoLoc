@@ -13,7 +13,7 @@ module AutoLocation
 
   csv_method = lambda{ |x| RUBY_VERSION.to_f >= 1.9 ? CSV.read(x) : FasterCSV.parse(x) }
   # regular expressions for city: CITY_NAME_PART1.*PART2.*....*STATE.*
-  # ex. San.*Jose.*(CA)*.*
+  # ex. San+.*Jose+.*(CA)*.*
   @cities ||= csv_method.call(city_file).map do |x|
                 [ Regexp.new(((x[2].split(/[\s\,]/).map(&:strip) << ('(' + x[1] + ')')).join('.*') + '*.*').upcase),
                   x[2],
