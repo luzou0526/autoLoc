@@ -10,7 +10,7 @@ describe 'auto location parse location from string' do
   end
 
   let(:valid_zip_code_response) do
-    {location: '95129', type: 'zipcode'}
+    {location: {zipcode: '95129', city: "San Jose", state: "CA"}, type: 'zipcode'}
   end
 
   let(:valid_state_response_short) do

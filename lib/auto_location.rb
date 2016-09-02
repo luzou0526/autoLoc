@@ -9,7 +9,6 @@ require 'auto_location/string'
 
 module AutoLocation
   city_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'cities.csv'))
-  zip_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'zips.csv'))
   state_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'states.csv'))
 
   csv_method = lambda{ |x| RUBY_VERSION.to_f >= 1.9 ? CSV.read(x) : FasterCSV.parse(x) }
@@ -21,13 +20,14 @@ module AutoLocation
                   x[1]
                 ]
               end
-  @zips   ||= Hash[(csv_method.call(zip_file)).map{|x| x << 1}]
+  @zips   ||= Hash[(csv_method.call(city_file)).map do |x|
+                [x[0], [x[2], x[1]]]
+              end]
   @states ||= Hash[(csv_method.call(state_file)).map do |x|
                 state = x[0]
-                x[0] = x[0].upcase
+                x[0] = state.upcase
                 x << state
               end]
-              
   # default result if zipcode, city, state search all failed
   @not_found_location ||= {error: "Location Not Found"}.freeze
 
