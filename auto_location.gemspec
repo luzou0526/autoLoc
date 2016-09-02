@@ -13,11 +13,8 @@ Gem::Specification.new do |s|
   s.summary     = "Valid US locations from string"
   s.description = "A light-weight gem, get valid US zipcode/city/states from any string."
   s.license     = "MIT"
-
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
-
-  s.add_dependency "rails", "~> 4.2.6"
-
-  s.add_development_dependency "sqlite3"
+  s.name          = "auto-loc"
+  s.require_paths = ["lib"]
 end
