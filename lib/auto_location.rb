@@ -20,6 +20,9 @@ module AutoLocation
                   x[1]
                 ]
               end
+  @cities_hash ||= Hash[(csv_method.call(city_file)).map do |x|
+                [(x[2] + ', ' + x[1]).upcase, [x[2], x[1]]]
+              end]
   @zips   ||= Hash[(csv_method.call(city_file)).map do |x|
                 [x[0], [x[2], x[1]]]
               end]
@@ -34,6 +37,10 @@ module AutoLocation
   class << self
     def cities
       @cities
+    end
+
+    def cities_hash
+      @cities_hash
     end
 
     def zips

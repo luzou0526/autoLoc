@@ -47,6 +47,10 @@ describe 'auto location parse location from string' do
       expect('string'.city('1428 San Josa')).to be_falsey
       expect('string'.city('San Hose, CA')).to be_falsey
     end
+
+    it 'when input perfectly matches to a city' do
+      expect('string'.city_perfect_match('San Jose, CA')).to eq(valid_city_response)
+    end
   end
 
   describe 'get state' do

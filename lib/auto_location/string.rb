@@ -4,7 +4,7 @@ class String
     # If search includes valid zipcode, return zipcode
     # If zipcode doesn't exist, do city search.
     # If city doesn't exist, do state search.
-    zipcode(self) || city(self) || state(self) || AutoLocation.not_found_location
+    zipcode(self) || city_perfect_match(self) || city(self) || state(self) || AutoLocation.not_found_location
   end
 
   # Check if zipcode exists
@@ -14,6 +14,12 @@ class String
       return { location: {zipcode: token, city: result[0], state: result[1]}, type: 'zipcode' } unless result == nil
     end
     false
+  end
+
+  def city_perfect_match(city)
+    city = city.upcase
+    result = AutoLocation.cities_hash[city]
+    result == nil ? false : { location: {city: result[0], state: result[1]}, type: 'city' }
   end
 
   # Find a city with the search string
