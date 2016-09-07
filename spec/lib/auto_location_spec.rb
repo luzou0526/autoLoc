@@ -21,6 +21,10 @@ describe 'auto location parse location from string' do
     {location: 'California', type: 'state'}
   end
 
+  let(:valid_county_response) do
+    { location: {county: 'Orange County', state: 'CA'}, type: 'county' }
+  end
+
   describe 'get zipcode' do
     it 'when input contains valid zipcode' do
       expect('string'.zipcode('hello world, San Jose, CA, 95129')).to eq(valid_zip_code_response)
@@ -53,6 +57,23 @@ describe 'auto location parse location from string' do
     end
   end
 
+  describe 'get county' do
+    it 'when input contains valid county' do
+      expect('string'.county('1428 downtown south, Orange County CA')).to eq(valid_county_response)
+      expect('string'.county('Orange some text County, some textCA')).to eq(valid_county_response)
+      expect('string'.county('orangecountyca')).to eq(valid_county_response)
+      expect('string'.county('some text orange some text county some text')).to eq(valid_county_response)
+    end
+
+    it 'when input does not contain valid county' do
+      expect('string'.county('1428 orancoutttttt')).to be_falsey
+    end
+
+    it 'when input perfectly matches to a county' do
+      expect('string'.county_perfect_match('Orange County, CA')).to eq(valid_county_response)
+    end
+  end
+
   describe 'get state' do
     it 'when input contains valid state' do
       expect('string'.state('ca')).to eq(valid_state_response_short)
@@ -69,6 +90,12 @@ describe 'auto location parse location from string' do
     end
   end
 
+  describe 'get city or county' do
+    it 'when county matches longer than city' do
+      expect('string'.city_or_county('some Orange County, CA')).to eq(valid_county_response)
+    end
+  end
+
   describe 'get validated location' do
     it 'when input contains valid zip' do
       expect('1428 downtown south San Jose, 95129, San Jose, CA'.validated_location).to eq(valid_zip_code_response)
@@ -78,12 +105,24 @@ describe 'auto location parse location from string' do
       expect('1428 downtown south San Jose, 35000, San Jose, CA'.validated_location).to eq(valid_city_response)
     end
 
+    it 'when input contains valid county' do
+      expect('1428 downtown, some text, Orange County, CA'.validated_location).to eq(valid_county_response)
+    end
+
     it 'when input contains valid state' do
       expect('1428 random text, 35000, San Josa, CA'.validated_location).to eq(valid_state_response_short)
     end
 
     it 'when input contains no valid location' do
       expect('1428 random text, 35000, San Josa, CC'.validated_location).to eq(not_found_location_response)
+    end
+
+    it 'when input contains pure state' do
+      expect('CA'.validated_location).to eq(valid_state_response_short)
+    end
+
+    it 'county messed up test' do
+      expect('adfsafasfa OrangeCOuntyCA dfsafasfs'.validated_location).to eq(valid_county_response)
     end
   end
 end
