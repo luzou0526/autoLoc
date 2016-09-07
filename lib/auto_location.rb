@@ -5,7 +5,7 @@ else
   require 'faster_csv'
 end
 
-require 'auto_location/string'
+require 'auto_location/string.rb'
 
 module AutoLocation
   city_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'cities.csv'))

@@ -90,6 +90,12 @@ describe 'auto location parse location from string' do
     end
   end
 
+  describe 'get city or county' do
+    it 'when county matches longer than city' do
+      expect('string'.city_or_county('some Orange County, CA')).to eq(valid_county_response)
+    end
+  end
+
   describe 'get validated location' do
     it 'when input contains valid zip' do
       expect('1428 downtown south San Jose, 95129, San Jose, CA'.validated_location).to eq(valid_zip_code_response)
@@ -115,5 +121,8 @@ describe 'auto location parse location from string' do
       expect('CA'.validated_location).to eq(valid_state_response_short)
     end
 
+    it 'county messed up test' do
+      expect('adfsafasfa OrangeCOuntyCA dfsafasfs'.validated_location).to eq(valid_county_response)
+    end
   end
 end

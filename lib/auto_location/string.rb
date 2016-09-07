@@ -25,10 +25,8 @@ class String
   def city_or_county(input)
     city_res = city(input)
     county_res = county(input)
-    return county_res unless city_res
-    return city_res unless county_res
-    puts city_res[:location][:city].split(' ').length
-    puts county_res[:location][:county].split(' ').length
+    return county_res if city_res == false
+    return city_res if county_res == false
     city_res[:location][:city].split(' ').length >= county_res[:location][:county].split(' ').length ? city_res : county_res
   end
 
