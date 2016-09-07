@@ -16,12 +16,14 @@ class String
     false
   end
 
+ # Find if the input perfectly matches to a city
   def city_perfect_match(city)
     city = city.upcase
     result = AutoLocation.cities_hash[city]
     result == nil ? false : { location: {city: result[0], state: result[1]}, type: 'city' }
   end
 
+  # Find the longest match between city and county search.
   def city_or_county(input)
     city_res = city(input)
     county_res = county(input)
@@ -52,6 +54,7 @@ class String
     false
   end
 
+  # Find a county with the search string
   def county(county)
     county = county.upcase
     results = []
@@ -62,6 +65,7 @@ class String
     result == nil ? false : { location: {county: result[1], state: result[2]}, type: 'county' }
   end
 
+  # Find if the input perfectly matches to a county
   def county_perfect_match(county)
     county = county.upcase
     result = AutoLocation.counties_hash[county]

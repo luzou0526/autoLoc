@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["luxizou.web@gmail.com@move.com"]
   s.homepage    = "http://github.com/luzou0526/autoLoc"
   s.summary     = "Valid US locations from string"
-  s.description = "A light-weight gem, get valid US zipcode/city/states from any string."
+  s.description = "A light-weight gem, get valid US zipcode/city/states/county from any string."
   s.license     = "MIT"
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
