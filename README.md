@@ -17,12 +17,16 @@ Or install directly on command line
   $ gem install auto_location
 ```
 
+# Update
+In version 0.0.4, added county support. 
+
 # Usage Example
 After the gem is installed, in Ruby Code:
 ```ruby
  '95129'.validated_location => {location: {zipcode: '95129', city: "San Jose", state: "CA"}, type: 'zipcode'}
  'San Jose, CA'.validated_location => {location: {city: "San Jose", state: "CA"}, type: 'city'}
  'CA'.validated_location => {location: 'CA', type: 'state'}
+ 'Orange County, CA'.validated_location =>  {location: {county: "Orange County", state: "CA"}, type: 'county'}
 ```
 The string can also include some unuseful info:
 ```ruby
