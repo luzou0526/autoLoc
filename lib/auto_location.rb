@@ -10,6 +10,7 @@ require 'auto_location/string'
 module AutoLocation
   city_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'cities.csv'))
   state_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'states.csv'))
+  county_file = File.open(File.join(File.dirname(__FILE__), '..', 'data', 'counties.csv'))
 
   csv_method = lambda{ |x| RUBY_VERSION.to_f >= 1.9 ? CSV.read(x) : FasterCSV.parse(x) }
   # regular expressions for city: CITY_NAME_PART1.*PART2.*....*STATE.*
@@ -21,8 +22,8 @@ module AutoLocation
                 ]
               end
   @cities_hash ||= Hash[(csv_method.call(city_file)).map do |x|
-                [(x[2] + ', ' + x[1]).upcase, [x[2], x[1]]]
-              end]
+                     [(x[2] + ', ' + x[1]).upcase, [x[2], x[1]]]
+                   end]
   @zips   ||= Hash[(csv_method.call(city_file)).map do |x|
                 [x[0].to_i, [x[2], x[1]]]
               end]
@@ -31,6 +32,16 @@ module AutoLocation
                 x[0] = state.upcase
                 x << state
               end]
+  @counties ||= csv_method.call(county_file).map do |x|
+                  [ Regexp.new(((x[0].split(/[\s\,]/).map(&:strip) << ('(' + x[1] + ')')).join('.*') + '*.*').upcase),
+                    x[0],
+                    x[1]
+                  ]
+                end
+  @counties_hash ||= Hash[(csv_method.call(county_file)).map do |x|
+                       [(x[0] + ', ' + x[1]).upcase, [x[0], x[1]]]
+                     end]
+
   # default result if zipcode, city, state search all failed
   @not_found_location ||= {error: "Location Not Found"}.freeze
 
@@ -49,6 +60,14 @@ module AutoLocation
 
     def states
       @states
+    end
+
+    def counties
+      @counties
+    end
+
+    def counties_hash
+      @counties_hash
     end
 
     def not_found_location
